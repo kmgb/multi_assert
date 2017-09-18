@@ -1,15 +1,13 @@
 macro_rules! multi_assert {
-    () => ();
-
-    ($x:expr $( , $more:expr )*) => (
-        assert!($x);
-        multi_assert!( $( $more ),* )
-    )
+    ($( $x:expr ),+) => { 
+        $(
+            assert!($x);
+        )*
+    }
 }
 
 fn main() {
-    println!("Hello, world!");
-    multi_assert!(true, true);
+    multi_assert!(true, 1 != 0); // Expands to assert(true);assert(1 != 0);
 
     let (a, b) = (3, 2);
 
@@ -18,6 +16,7 @@ fn main() {
         b != a,
         a != 0,
         b != 0,
-        1 != 1 // thread 'main' panicked at 'assertion failed: 1 != 1'
+        1 != 1 // Err: thread 'main' panicked at 'assertion failed: 1 != 1'
     );
+
 }
